@@ -10,3 +10,7 @@ This project attempts to predict and model tree growth in a novel way.
     cd ~/workspace/mcmc_growth
     workon mcmc_growth
     jupyter notebook
+
+## Updating requirements
+
+    pip freeze > requirements.txt
