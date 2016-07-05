@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# VIM
+*.swp
+
+# MCMC_GROWTH
+data/*
