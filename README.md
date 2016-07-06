@@ -5,7 +5,21 @@ This project attempts to predict and model tree growth in a novel way.
 
 # Installation
 
-TODO
+```
+# Initial install:
+sudo pip install virtualenvwrapper
+echo "export WORKON_HOME=~/Envs" >> ~/.bashrc
+echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
+source ~/.bashrc
+mkvirtualenv mcmc_growth
+pip install -r requirements.txt
+
+
+# After logging out of DebAthena, to re-initialize env:
+sudo pip install virtualenvwrapper
+source ~/.bashrc
+workon mcmc_growth
+```
 
 # Obtaining the data
 
