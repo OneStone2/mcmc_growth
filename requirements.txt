@@ -34,6 +34,7 @@ mccabe==0.5.0
 mistune==0.7.3
 nbconvert==4.2.0
 nbformat==4.0.1
+networkx==1.11
 notebook==4.2.1
 numpy==1.11.1
 pandas==0.18.1
@@ -51,6 +52,7 @@ pytz==2016.4
 pyzmq==15.2.0
 qtconsole==4.2.1
 requests==2.10.0
+scikit-fuzzy==0.2
 scikit-learn==0.17.1
 scipy==0.17.1
 seaborn==0.7.1
