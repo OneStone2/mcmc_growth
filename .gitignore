@@ -93,3 +93,4 @@ ENV/
 
 # MCMC_GROWTH
 data/*
+.Rproj.user
