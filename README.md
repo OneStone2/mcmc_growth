@@ -23,19 +23,21 @@ workon mcmc_growth
 
 # Operation
 ```
-python run.py [state code] [number of clusters]
+python run.py [--online] state
 ```
 state code is a 2-letter code for the state (e.g. ME)
-number of clusters is used in the clustering step
 
-Displaying graphs is WIP.
+--online is to download the required files on the fly.
 
 # Obtaining the data
 
-This project uses an FIA dataset for the state of Maine.  To download them:
+Sometimes, the connection the the FIA database is unstable.
+
+To download them manually:
 ```
 wget http://apps.fs.fed.us/fiadb-downloads/CSV/ME_PLOT.csv -O data/ME_PLOT.csv
 wget http://apps.fs.fed.us/fiadb-downloads/CSV/ME_TREE.csv -O data/ME_TREE.csv
+wget http://apps.fs.fed.us/fiadb-downloads/CSV/ME_COND.csv -O data/ME_COND.csv
 ```
 For other states, replace ME with the corresponding state code.
 
