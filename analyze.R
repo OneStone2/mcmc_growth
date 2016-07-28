@@ -5,8 +5,7 @@ registerDoMC(core = 7)
 analyze_r05 <- function(state, human) {
     if (human) {
         x <- read.csv(paste("data/", state, "_2a.csv", sep=''), as.is=T)
-    }
-    else {
+    } else {
         x <- read.csv(paste("data/", state, "_2b.csv", sep=''), as.is=T)
     }
     r1 <- x[["carb"]]
@@ -43,8 +42,7 @@ analyze_r05 <- function(state, human) {
 analyze_r06 <- function(state, human) {
     if (human) {
         x <- read.csv(paste("data/", state, "_2a.csv", sep=''), as.is=T)
-    }
-    else {
+    } else {
         x <- read.csv(paste("data/", state, "_2b.csv", sep=''), as.is=T)
     }
     r1 <- x[["carb"]]
@@ -81,10 +79,11 @@ analyze_r06 <- function(state, human) {
 analyze_r07 <- function(state, human) {
     if (human) {
         x <- read.csv(paste("data/", state, "_2a.csv", sep=''), as.is=T)
-    }
-    else {
+    } else {
         x <- read.csv(paste("data/", state, "_2b.csv", sep=''), as.is=T)
     }
+    x['human_p'] <- x['human_p'] + x['human_f']
+    x['human_f'] <- pmin(1, x['human_f'])
     r1 <- x[["carb"]]
     r2 <- x[["py"]]
     r3 <- x[["human_p"]]
@@ -123,27 +122,31 @@ analyze_r07 <- function(state, human) {
 }
 
 analyze_r08 <- function(state, human) {
+    state <- 'ME'
+    human <- F
     if (human) {
         x <- read.csv(paste("data/", state, "_2a.csv", sep=''), as.is=T)
-    }
-    else {
+    } else {
         x <- read.csv(paste("data/", state, "_2b.csv", sep=''), as.is=T)
     }
     r1 <- x[["carb"]]
     r2 <- x[["py"]]
     r3 <- x[["human_p"]]
     r4 <- x[["human_n"]]
+    r5 <- x[["human_f"]]
     x <- x[-c(nrow(x)),]
     r1 <- r1[-c(1)]
     r2 <- r2[-c(1)]
     r3 <- r3[-c(1)]
     r4 <- r4[-c(1)]
+    r5 <- r5[-c(1)]
     x["post_py"] <- r2
     x["growth"] <- (x["carb"]-r1)/(x["py"]-x["post_py"])
     x["human_p"] <- r3
     x["human_n"] <- r4
+    x["human_f"] <- r5
     x <- x[x[,"py"] %/% 10000 == x[,"post_py"] %/% 10000,]
-    x <- x[, names(x) %in% grep("(growth)|(py)|(post_py)|(lat)|(lon)|(carb)|(iv[0123456789.]+)|(human_[np])|(elevation)", colnames(x), value=T)]
+    x <- x[, names(x) %in% grep("(growth)|(py)|(post_py)|(lat)|(lon)|(carb)|(iv[0123456789.]+)|(human_[npf])", colnames(x), value=T)]
     row.names(x) <- 1:nrow(x)
 
     X <- x[, !names(x) %in% c("growth","py","post_py")]
@@ -168,11 +171,11 @@ analyze_r08 <- function(state, human) {
 
 state <- 'ME'
 #Change state for whatever you want
-N_REP <- 5
+N_REP <- 3
 print("Including human interaction:")
 sum <- 0
 for (i in 1:N_REP) {
-    sum <- sum + analyze_r05(state=state, human=T)
+  sum <- sum + analyze_r05(state=state, human=T)
 }
 print(paste('[5]', sum / N_REP))
 sum <- 0

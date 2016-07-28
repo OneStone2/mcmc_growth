@@ -9,6 +9,35 @@ import math
 import bisect
 import urllib2
 import os
+import sys
+
+def chunk_report(bytes_so_far, chunk_size, total_size):
+   percent = float(bytes_so_far) / total_size
+   percent = round(percent*100, 2)
+   sys.stdout.write("Downloaded %d of %d bytes (%0.2f%%)\r" % 
+       (bytes_so_far, total_size, percent))
+
+   if bytes_so_far >= total_size:
+      sys.stdout.write('\n')
+
+def chunk_read(response, chunk_size=8192, report_hook=None):
+   total_size = response.info().getheader('Content-Length').strip()
+   total_size = int(total_size)
+   bytes_so_far = 0
+   data = []
+
+   while 1:
+      chunk = response.read(chunk_size)
+      bytes_so_far += len(chunk)
+
+      if not chunk:
+         break
+
+      data += chunk
+      if report_hook:
+         report_hook(bytes_so_far, chunk_size, total_size)
+
+   return "".join(data)
 
 def check(row):
     """
@@ -60,17 +89,23 @@ def check_n(row):
 
 def check_p(row):
     """
-    Checks for positive human intervention in a plot
+    Checks for recent planting in a plot
     """
     if row['TRTCD1'] == 30.0:
         return 1
-    if row['TRTCD1'] == 50.0:
-        return 1
     if row['TRTCD2'] == 30.0:
         return 1
-    if row['TRTCD2'] == 50.0:
-        return 1
     if row['TRTCD3'] == 30.0:
+        return 1
+    return 0
+
+def check_f(row):
+    """
+    Checks for positive human intervention in a plot
+    """
+    if row['TRTCD1'] == 50.0:
+        return 1
+    if row['TRTCD2'] == 50.0:
         return 1
     if row['TRTCD3'] == 50.0:
         return 1
@@ -94,6 +129,7 @@ class Plot(object):
         self.lat = plot['LAT']
         self.human_n = check_n(dstrb)
         self.human_p = check_p(dstrb)
+        self.human_f = check_f(dstrb)
 
     def calc_iv(self):
         """
@@ -142,7 +178,8 @@ class Plot(object):
             'lon': self.lon,
             'lat': self.lat,
             'human_p': self.human_p,
-            'human_n': self.human_n
+            'human_n': self.human_n,
+            'human_f': self.human_f
         }
         stats.update(self.calc_iv())
         return stats
@@ -165,19 +202,22 @@ def parse(state, online=True):
         PLOT_WEB = "http://apps.fs.fed.us/fiadb-downloads/CSV/"+state+"_PLOT.csv"
         DSTRB_WEB = "http://apps.fs.fed.us/fiadb-downloads/CSV/"+state+"_COND.csv"
         response = urllib2.urlopen(TREES_WEB)
-        csv = response.read()
+        print TREES_WEB
+        csv = chunk_read(response, report_hook=chunk_report)
         f = open('temp', 'w')
         f.write(csv)
         f.close()
         trees_df = pd.read_csv('temp', usecols=TREES_COLS)
         response = urllib2.urlopen(PLOT_WEB)
-        csv = response.read()
+        print PLOT_WEB
+        csv = chunk_read(response, report_hook=chunk_report)
         f = open('temp', 'w')
         f.write(csv)
         f.close()
         plot_df = pd.read_csv('temp', usecols=PLOT_COLS)
         response = urllib2.urlopen(DSTRB_WEB)
-        csv = response.read()
+        print DSTRB_WEB
+        csv = chunk_read(response, report_hook=chunk_report)
         f = open('temp', 'w')
         f.write(csv)
         f.close()
@@ -253,7 +293,7 @@ def clean(state, b):
         cur_np = 1
         prev_id = data_points.loc[data_points.index[0], 'py'] // 10000
         for i, row in data_points.iterrows():
-            if (prev_id != row['py'] // 10000) or (row['human_n'] == 1) or (row['human_p'] == 1):
+            if (prev_id != row['py'] // 10000) or (row['human_n'] == 1) or (row['human_p'] == 1) or (row['human_f'] == 1):
                 cur_np += 1
             prev_id = row['py'] // 10000
             data_points.loc[i, 'py'] = int(cur_np * 10000 + row['py'] % 10000)

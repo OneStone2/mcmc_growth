@@ -28,7 +28,14 @@ python run.py [--online] state
 ```
 state code is a 2-letter code for the state (e.g. ME)
 
+state=US if you want to run the model for all contiguous states.
+
 --online is to download the required files on the fly.
+
+```
+python update.py [--online] state
+```
+Run this program after changing the read.py file.
 
 # Obtaining the data
 
