@@ -10,6 +10,7 @@ This project attempts to predict and model tree growth in a novel way.
 sudo pip install virtualenvwrapper
 echo "export WORKON_HOME=~/Envs" >> ~/.bashrc
 echo "source /usr/local/bin/virtualenvwrapper.sh" >> ~/.bashrc
+echo "add r" >> ~/.bashrc.mine
 source ~/.bashrc
 mkvirtualenv mcmc_growth
 pip install -r requirements.txt
