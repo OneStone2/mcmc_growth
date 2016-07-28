@@ -22,7 +22,7 @@ if __name__ == '__main__':
             read.cluster_prep_file(plots, args.state)
         read.clean(args.state, b=True)
 
-    N_REP = 50
+    N_REP = 1
     print 'Including human interaction:'
     sum = 0
     for i in np.arange(N_REP):

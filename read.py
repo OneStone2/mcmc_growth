@@ -8,6 +8,7 @@ import numpy as np
 import math
 import bisect
 import urllib2
+import os
 
 def check(row):
     """
@@ -164,15 +165,28 @@ def parse(state, online=True):
         PLOT_WEB = "http://apps.fs.fed.us/fiadb-downloads/CSV/"+state+"_PLOT.csv"
         DSTRB_WEB = "http://apps.fs.fed.us/fiadb-downloads/CSV/"+state+"_COND.csv"
         response = urllib2.urlopen(TREES_WEB)
-        trees_df = pd.read_csv(response.read(), usecols=TREES_COLS)
+        csv = response.read()
+        f = open('temp', 'w')
+        f.write(csv)
+        f.close()
+        trees_df = pd.read_csv('temp', usecols=TREES_COLS)
         response = urllib2.urlopen(PLOT_WEB)
-        trees_df = pd.read_csv(response.read(), usecols=PLOT_COLS)
+        csv = response.read()
+        f = open('temp', 'w')
+        f.write(csv)
+        f.close()
+        plot_df = pd.read_csv('temp', usecols=PLOT_COLS)
         response = urllib2.urlopen(DSTRB_WEB)
-        trees_df = pd.read_csv(response.read(), usecols=DSTRB_COLS)
+        csv = response.read()
+        f = open('temp', 'w')
+        f.write(csv)
+        f.close()
+        dstrb_df = pd.read_csv('temp', usecols=DSTRB_COLS)
+        os.remove('temp')
     else:
-        TREES_FILE = '~/Downloads/'+state+'_TREE.csv'
-        PLOT_FILE = '~/Downloads/'+state+'_PLOT.csv'
-        DSTRB_FILE = '~/Downloads/'+state+'_COND.csv'
+        TREES_FILE = 'data/'+state+'_TREE.csv'
+        PLOT_FILE = 'data/'+state+'_PLOT.csv'
+        DSTRB_FILE = 'data/'+state+'_COND.csv'
         trees_df = pd.read_csv(TREES_FILE, usecols=TREES_COLS)
         plot_df = pd.read_csv(PLOT_FILE, usecols=PLOT_COLS)
         dstrb_df = pd.read_csv(DSTRB_FILE, usecols=DSTRB_COLS)
