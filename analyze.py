@@ -40,8 +40,8 @@ def analyze_r01(state, human, time):
     data_points = data_points.as_matrix().tolist()
     #Split data into training and testing
     random.shuffle(data_points)
-    training = data_points[0:9 * len(data_points) / 10]
-    test = data_points[9 * len(data_points) / 10:len(data_points)]
+    training = data_points[0:len(data_points) / 2]
+    test = data_points[len(data_points) / 2:len(data_points)]
     training = np.array(training)
     #Create the linear regression function
     m = stats.linregress(training).slope
@@ -94,7 +94,7 @@ def analyze_r02(state, human, time):
         next_cutoff = (i + 1) * len(data_points) / N_GROUPS
         groups.append(data_points[prev_cutoff:next_cutoff])
         prev_cutoff = next_cutoff
-    min_mse = float("inf")
+    sum_mse = 0
     for i in np.arange(N_GROUPS):
         training = []
         test = []
@@ -112,9 +112,8 @@ def analyze_r02(state, human, time):
             actual = elem[1]
             sq_error += (actual - predicted) ** 2
         mse = math.sqrt(sq_error/len(test))
-        if mse < min_mse:
-            min_mse = mse
-    return min_mse
+        sum_mse += mse
+    return sum_mse/N_GROUPS
 
 def analyze_r03(state, human, time, called_as_r04=False):
     """
@@ -163,7 +162,7 @@ def analyze_r03(state, human, time, called_as_r04=False):
         next_cutoff = (i + 1) * len(data_points) / N_GROUPS
         groups.append(data_points[prev_cutoff:next_cutoff])
         prev_cutoff = next_cutoff
-    min_mse = float("inf")
+    sum_mse = 0
     #Create the model while performing cross-validation
     for i in np.arange(N_GROUPS):
         training = []
@@ -184,9 +183,8 @@ def analyze_r03(state, human, time, called_as_r04=False):
             actual = elem[1]
             sq_error += (actual - predicted) ** 2
         mse = math.sqrt(sq_error/len(test))
-        if mse < min_mse:
-            min_mse = mse
-    return min_mse
+        sum_mse += mse
+    return sum_mse/N_GROUPS
 
 def analyze_r04(state, human, time):
     """

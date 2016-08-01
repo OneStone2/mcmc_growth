@@ -24,20 +24,21 @@ analyze_r05 <- function(state, human) {
 
     groups <- split(1:nrow(x), sample(1:10, nrow(x), replace=T))
 
-    min_mse = Inf
+    sum_mse = 0
+    mdl <- c()
     for (i in 1:10) {
       rows <- groups[[i]]
       X1 <- X[-rows, ]
       X2 <- X[rows, ]
       Y1 <- Y[-rows]
       Y2 <- Y[rows]
-
-      mdl2 <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
-      mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
-      if (mse < min_mse) min_mse <- mse
+      
+      mdl[[i]] <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
+      mse <- sqrt(sum((Y2 -predict(mdl[[i]], newdata = X2)) ^ 2)/length(Y2))
+      sum_mse <- sum_mse + mse
     }
-    print (paste("[5]", min_mse, sep=' '))
-    return(mdl2)
+    cat(paste(sum_mse/10, '\n', sep=''))
+    return(mdl)
 }
 
 analyze_r06 <- function(state, human) {
@@ -62,20 +63,21 @@ analyze_r06 <- function(state, human) {
 
     groups <- split(1:nrow(x), sample(1:10, nrow(x), replace=T))
 
-    min_mse = Inf
+    sum_mse = 0
+    mdl <- c()
     for (i in 1:10) {
       rows <- groups[[i]]
       X1 <- X[-rows, ]
       X2 <- X[rows, ]
       Y1 <- Y[-rows]
       Y2 <- Y[rows]
-
-      mdl2 <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
-      mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
-      if (mse < min_mse) min_mse <- mse
+      
+      mdl[[i]] <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
+      mse <- sqrt(sum((Y2 -predict(mdl[[i]], newdata = X2)) ^ 2)/length(Y2))
+      sum_mse <- sum_mse + mse
     }
-    print (paste("[6]", min_mse, sep=' '))
-    return(mdl2)
+    cat(paste(sum_mse/10, '\n', sep=''))
+    return(mdl)
 }
 
 analyze_r07 <- function(state, human) {
@@ -108,20 +110,21 @@ analyze_r07 <- function(state, human) {
 
     groups <- split(1:nrow(x), sample(1:10, nrow(x), replace=T))
 
-    min_mse = Inf
+    sum_mse = 0
+    mdl <- c()
     for (i in 1:10) {
       rows <- groups[[i]]
       X1 <- X[-rows, ]
       X2 <- X[rows, ]
       Y1 <- Y[-rows]
       Y2 <- Y[rows]
-
-      mdl2 <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
-      mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
-      if (mse < min_mse) min_mse <- mse
+      
+      mdl[[i]] <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
+      mse <- sqrt(sum((Y2 -predict(mdl[[i]], newdata = X2)) ^ 2)/length(Y2))
+      sum_mse <- sum_mse + mse
     }
-    print (paste("[7]", min_mse, sep=' '))
-    return(mdl2)
+    cat(paste(sum_mse/10, '\n', sep=''))
+    return(mdl)
 }
 
 analyze_r08 <- function(state, human) {
@@ -155,31 +158,36 @@ analyze_r08 <- function(state, human) {
 
     groups <- split(1:nrow(x), sample(1:10, nrow(x), replace=T))
 
-    min_mse = Inf
+    sum_mse = 0
+    mdl <- c()
     for (i in 1:10) {
       rows <- groups[[i]]
       X1 <- X[-rows, ]
       X2 <- X[rows, ]
       Y1 <- Y[-rows]
       Y2 <- Y[rows]
-
-      mdl2 <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
-      mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
-      if (mse < min_mse) min_mse <- mse
+      
+      mdl[[i]] <- cubist(x = X1, y = Y1, commitees = 1, control = cubistControl(unbiased = TRUE, rules = 999, label = "growth"))
+      mse <- sqrt(sum((Y2 -predict(mdl[[i]], newdata = X2)) ^ 2)/length(Y2))
+      sum_mse <- sum_mse + mse
     }
-    print (paste("[8]", min_mse, sep=' '))
-    return(mdl2)
+    cat(paste(sum_mse/10, '\n', sep=''))
+    return(mdl)
 }
 
-state <- 'ME'
-#Change state for whatever you want
-print("Including human interaction:")
-mdl5a <- analyze_r05(state=state, human=T)
-mdl6a <- analyze_r06(state=state, human=T)
-mdl7a <- analyze_r07(state=state, human=T)
-mdl8a <- analyze_r08(state=state, human=T)
-print("Excluding human interaction:")
-mdl5b <- analyze_r05(state=state, human=F)
-mdl6b <- analyze_r06(state=state, human=F)
-mdl7b <- analyze_r07(state=state, human=F)
-mdl8b <- analyze_r08(state=state, human=F)
+state <- 'PA'
+#Change state to whatever you want
+mdl5 <- analyze_r05(state=state, human=T)
+mdl6 <- analyze_r06(state=state, human=T)
+mdl7 <- analyze_r07(state=state, human=T)
+mdl8 <- analyze_r08(state=state, human=T)
+#The following lines are for test purposes only
+#forest <- varImp(mdl8[[1]])
+#forest <- data.frame(forest[order(rownames(forest)),])
+#for (i in 2:10) {
+#  new_df <- varImp(mdl8[[i]])
+#  new_df <- data.frame(new_df[order(rownames(new_df)),])
+#  forest[i] <- new_df
+#}
+#write.csv(forest, file=paste(state, '_cubist.csv', sep=''))
+#varImp(mdl8[[2]])

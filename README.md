@@ -23,6 +23,8 @@ workon mcmc_growth
 ```
 
 # Operation
+All the command must be performed on the application folder.
+
 To execute iterations 1-4:
 ```
 python run.py [--online] state
