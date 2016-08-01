@@ -1,5 +1,5 @@
 # mcmc_growth
-Monte Carlo Markov Chain Tree Growth
+Forest Modeling for Carbon Sequestration
 
 This project attempts to predict and model tree growth in a novel way.
 
@@ -23,6 +23,7 @@ workon mcmc_growth
 ```
 
 # Operation
+To execute iterations 1-4:
 ```
 python run.py [--online] state
 ```
@@ -32,10 +33,21 @@ state=US if you want to run the model for all contiguous states.
 
 --online is to download the required files on the fly.
 
+Note that this program doesn't output the model, only the RMSE.
+
 ```
 python update.py [--online] state
 ```
 Run this program after changing the read.py file.
+
+To execute iterations 5-8:
+```
+rstudio
+```
+
+Open analyze.R and execute Source.
+
+This program outputs RMSE but stores the models as mdlxy, where x is the iteration number and y represents human interaction (a) or not (b).
 
 # Obtaining the data
 

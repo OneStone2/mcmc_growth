@@ -11,7 +11,7 @@ if __name__ == '__main__':
     args = argparser.parse_args()
     args.state = [args.state]
     if args.state == ['US']:
-        args.state = ['AL', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'ID', 'IL', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WI', 'WY']
+        args.state = ['AL', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
     for state in args.state:
         if not (
             os.path.isfile('data/'+state+'_2a.csv') 
@@ -26,6 +26,7 @@ if __name__ == '__main__':
             read.clean(args.state, b=True)
 
         N_REP = 30
+        print 'Analyzing', state
         print 'Including human interaction:'
         sum = 0
         for i in np.arange(N_REP):

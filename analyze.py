@@ -11,13 +11,15 @@ import math
 
 def analyze_r01(state, human, time):
     """
-    Revision 1
+    Iteration 1
     """
+    #Read data
     if human:
         DATA_CSV = 'data/'+state+'_2a.csv'
     else:
         DATA_CSV = 'data/'+state+'_2b.csv'
     data_points = pd.read_csv(DATA_CSV)
+    #Shift carbon and year one row back
     nr1 = data_points['carb']
     nr1 = nr1.iloc[1:len(nr1)]
     nr2 = data_points['py']
@@ -25,6 +27,7 @@ def analyze_r01(state, human, time):
     data_points = data_points.iloc[0:len(data_points.index)-1]
     nr1.index = np.arange(len(nr1.index))
     nr2.index = np.arange(len(nr2.index))
+    #Now we can calculate difference in carbon
     if time:
         data_points.loc[:, 'growth'] = (nr1 - data_points['carb']) / (nr2 - data_points['py'])
     else:
@@ -35,13 +38,16 @@ def analyze_r01(state, human, time):
     data_points.index = np.arange(len(data_points.index))
     data_points = data_points.loc[:, ['carb', 'growth']]
     data_points = data_points.as_matrix().tolist()
+    #Split data into training and testing
     random.shuffle(data_points)
     training = data_points[0:9 * len(data_points) / 10]
     test = data_points[9 * len(data_points) / 10:len(data_points)]
     training = np.array(training)
+    #Create the linear regression function
     m = stats.linregress(training).slope
     n = stats.linregress(training).intercept
     sq_error = 0.0
+    #Perform validation
     for elem in test:
         predicted = m * elem[0] + n
         actual = elem[1]
@@ -53,11 +59,13 @@ def analyze_r02(state, human, time):
     """
     Revision 2
     """
+    #Read data
     if human:
         DATA_CSV = 'data/'+state+'_2a.csv'
     else:
         DATA_CSV = 'data/'+state+'_2b.csv'
     data_points = pd.read_csv(DATA_CSV)
+    #Shift carbon and year one row back
     nr1 = data_points['carb']
     nr1 = nr1.iloc[1:len(nr1)]
     nr2 = data_points['py']
@@ -65,6 +73,7 @@ def analyze_r02(state, human, time):
     data_points = data_points.iloc[0:len(data_points.index)-1]
     nr1.index = np.arange(len(nr1.index))
     nr2.index = np.arange(len(nr2.index))
+    #Now we can calculate difference in carbon
     if time:
         data_points.loc[:, 'growth'] = (nr1 - data_points['carb']) / (nr2 - data_points['py'])
     else:
@@ -75,10 +84,12 @@ def analyze_r02(state, human, time):
     data_points.index = np.arange(len(data_points.index))
     data_points = data_points.loc[:, ['carb', 'growth']]
     data_points = data_points.as_matrix().tolist()
+    #Split data into 10 groups
     N_GROUPS = 10
     random.shuffle(data_points)
     groups = []
     prev_cutoff = 0
+    #Create the model while performing cross-validation
     for i in np.arange(N_GROUPS):
         next_cutoff = (i + 1) * len(data_points) / N_GROUPS
         groups.append(data_points[prev_cutoff:next_cutoff])
@@ -109,11 +120,13 @@ def analyze_r03(state, human, time, called_as_r04=False):
     """
     Revision 3
     """
+    #Read data
     if human:
         DATA_CSV = 'data/'+state+'_2a.csv'
     else:
         DATA_CSV = 'data/'+state+'_2b.csv'
     data_points = pd.read_csv(DATA_CSV)
+    #Shift carbon and year one row back
     nr1 = data_points['carb']
     nr1 = nr1.iloc[1:len(nr1)]
     nr2 = data_points['py']
@@ -121,16 +134,17 @@ def analyze_r03(state, human, time, called_as_r04=False):
     data_points = data_points.iloc[0:len(data_points.index)-1]
     nr1.index = np.arange(len(nr1.index))
     nr2.index = np.arange(len(nr2.index))
+    #Now we can calculate difference in carbon
     if time:
         data_points.loc[:, 'growth'] = (nr1 - data_points['carb']) / (nr2 - data_points['py'])
     else:
         data_points.loc[:, 'growth'] = nr1
     data_points.loc[:, 'post_py'] = nr2
+    data_points = data_points[data_points.post_py // 10000 == data_points.py // 10000]
     mode = stats.mode((data_points['post_py'] - data_points['py']).tolist()).mode[0]
+    #Iteration 4 is same as 3 but ignores time steps other than the most common
     if called_as_r04:
-        data_points = data_points[data_points.post_py - data_points.py == mode]
-    else:
-        data_points = data_points[data_points.post_py // 10000 == data_points.py // 10000]
+        data_points = data_points[data_points.post_py - data_points.py == mode]  
     data_points.drop(['py', 'post_py'], axis=1, inplace=True)
     data_points.index = np.arange(len(data_points.index))
     data_points = data_points.loc[:, ['carb', 'lat', 'lon', 'growth']]
@@ -140,6 +154,7 @@ def analyze_r03(state, human, time, called_as_r04=False):
         elem[0].pop()
         elem[1] = elem[-1]
         data_points[i] = elem[0:2]
+    #Split data into 10 groups
     N_GROUPS = 10
     random.shuffle(data_points)
     groups = []
@@ -149,6 +164,7 @@ def analyze_r03(state, human, time, called_as_r04=False):
         groups.append(data_points[prev_cutoff:next_cutoff])
         prev_cutoff = next_cutoff
     min_mse = float("inf")
+    #Create the model while performing cross-validation
     for i in np.arange(N_GROUPS):
         training = []
         test = []

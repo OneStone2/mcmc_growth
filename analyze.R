@@ -36,7 +36,8 @@ analyze_r05 <- function(state, human) {
       mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
       if (mse < min_mse) min_mse <- mse
     }
-    return(min_mse)
+    print (paste("[5]", min_mse, sep=' '))
+    return(mdl2)
 }
 
 analyze_r06 <- function(state, human) {
@@ -73,7 +74,8 @@ analyze_r06 <- function(state, human) {
       mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
       if (mse < min_mse) min_mse <- mse
     }
-    return(min_mse)
+    print (paste("[6]", min_mse, sep=' '))
+    return(mdl2)
 }
 
 analyze_r07 <- function(state, human) {
@@ -118,12 +120,11 @@ analyze_r07 <- function(state, human) {
       mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
       if (mse < min_mse) min_mse <- mse
     }
-    return(min_mse)
+    print (paste("[7]", min_mse, sep=' '))
+    return(mdl2)
 }
 
 analyze_r08 <- function(state, human) {
-    state <- 'ME'
-    human <- F
     if (human) {
         x <- read.csv(paste("data/", state, "_2a.csv", sep=''), as.is=T)
     } else {
@@ -166,51 +167,19 @@ analyze_r08 <- function(state, human) {
       mse <- sqrt(sum((Y2 -predict(mdl2, newdata = X2)) ^ 2)/length(Y2))
       if (mse < min_mse) min_mse <- mse
     }
-    return(min_mse)
+    print (paste("[8]", min_mse, sep=' '))
+    return(mdl2)
 }
 
 state <- 'ME'
 #Change state for whatever you want
-N_REP <- 3
 print("Including human interaction:")
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r05(state=state, human=T)
-}
-print(paste('[5]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r06(state=state, human=T)
-}
-print(paste('[6]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r07(state=state, human=T)
-}
-print(paste('[7]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r08(state=state, human=T)
-}
-print(paste('[8]', sum / N_REP))
+mdl5a <- analyze_r05(state=state, human=T)
+mdl6a <- analyze_r06(state=state, human=T)
+mdl7a <- analyze_r07(state=state, human=T)
+mdl8a <- analyze_r08(state=state, human=T)
 print("Excluding human interaction:")
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r05(state=state, human=F)
-}
-print(paste('[5]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r06(state=state, human=F)
-}
-print(paste('[6]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r07(state=state, human=F)
-}
-print(paste('[7]', sum / N_REP))
-sum <- 0
-for (i in 1:N_REP) {
-  sum <- sum + analyze_r08(state=state, human=F)
-}
-print(paste('[8]', sum / N_REP))
+mdl5b <- analyze_r05(state=state, human=F)
+mdl6b <- analyze_r06(state=state, human=F)
+mdl7b <- analyze_r07(state=state, human=F)
+mdl8b <- analyze_r08(state=state, human=F)
